@@ -1,0 +1,26 @@
+<header>
+  <app-header></app-header>
+</header>
+<div class="container">
+  <aside>
+    <app-user-list></app-user-list>
+  </aside>
+  <main>
+    <!-- If SenderId == fromUsrId => Right-->
+    <!-- If SenderId == toUsrId => left -->
+    @if (ReceiverId === DEFAULT) {
+      <h3 class="place-holder">Select chat to start messaging</h3>
+    } @else {
+      <h1>Chat Room:</h1>
+    }
+    <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%' }"></section>
+    <label for="message-bar">user: {{ SenderId }}</label>
+    <span for="message-bar">chat partner: {{ ReceiverId }}</span>
+    <input #message type="text" id="message-bar">
+    <button class="btn" type="button" style="width: fit-content" (click)="onSendMessage()">Send</button>
+    <button class="btn" style="left: 88%" type="button" (click)="videoCallToggle()">Video Call</button>
+  </main>
+  @if (isVideoCall && ReceiverId !== DEFAULT) {
+    <app-video-call style="flex: 1; transition: 1s;"></app-video-call>
+  }
+</div>

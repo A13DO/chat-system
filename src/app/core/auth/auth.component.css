@@ -1,0 +1,38 @@
+main {
+  background-color: white;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+form {
+  display: flex; flex-direction: column; width: 200px;
+  gap: 20px;
+  box-shadow: 0 0 20px 2px #00000057;
+  width: 300px;
+  height: 400px;
+  padding: 50px;
+  border-radius: 8px;
+
+}
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+span {
+  display: flex; flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  padding: 8px 0;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+}
+.login {
+  background-color: rgba(52, 176, 52, 0.767);
+}
+

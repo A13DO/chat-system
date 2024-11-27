@@ -1,0 +1,11 @@
+<div class="video-call">
+  <div class="videos">
+    <video #localVideo id="localVideo" autoplay ></video>
+    <video #remoteVideo id="remoteVideo" autoplay></video>
+    <button style="background-color: #22e275;" (click)="startCall()">Start Call</button>
+    <button style="background-color: #e24b22;" (click)="endCall()">End Call</button>
+  </div>
+  @if (peerID) {
+    <p style="color: white; ">Your PeerID: {{ peerID }}</p>
+  }
+</div>

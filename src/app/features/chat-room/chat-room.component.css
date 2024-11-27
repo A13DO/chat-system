@@ -1,0 +1,143 @@
+
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  height: calc(100% - 90px);
+  width: calc(100% - 75px);
+  position: relative;
+  left: 60px;
+  top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+aside {
+  border-radius: 10px;
+  padding: 10px;
+  flex-basis: 15%;
+  border-right: gainsboro solid 1px;
+  background-color: var(--user-list-background-color);
+  overflow-y: auto;
+}
+
+
+main {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center;
+  justify-content: center; */
+  padding: 20px 0 0 20px;
+  border-radius: 10px;
+  height: 100%;
+  background-color: var(--chat-room-background-color);
+}
+main h3.place-holder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 600;
+}
+#message-bar {
+  width: 50%;
+  padding: 8px 16px;
+  position: absolute;
+  bottom: 30px;
+  left: 110px;
+  border-radius: 10px;
+  border: 2px black solid;
+}
+.btn {
+  width: fit-content;
+  padding: 8px 25px;
+  cursor: pointer;
+  bottom: 30px;
+  position: absolute;
+  left: 65%;
+  border-radius: 10px;
+  border: 2px black solid;
+  background-color: #222222;
+  color: white;
+  font-weight: bold;
+}
+.chat {
+  position: absolute;
+  left: 32%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  display: flex
+;
+  flex-direction: column;
+  gap: 10px;
+  width: 50%;
+  height: 80%;
+  overflow-y: auto;
+  /* background-color: #daf8cb; */
+ }
+
+
+.chat > p {
+  text-align: right !important;
+  background-color: #222222;
+}
+
+
+@media (min-width: 575px) and (max-width: 991px) {
+  aside {
+    flex-basis: 40%;
+  }
+    .chat {
+    left: 48%;
+    width: 80%;
+  }
+}
+@media (min-width: 992px){
+  aside {
+    flex-basis: 25%;
+  }
+  /* .chat {
+    left: 48%;
+    width: 80%;
+  } */
+}
+@media (min-width: 1380px){
+  aside {
+    flex-basis: 20%;
+  }
+  .chat {
+    left: 40%;
+    height: 62%;
+  }
+}
+@media (min-width: 1669px){
+  aside {
+    flex-basis: 15%;
+  }
+}
+
+
+
+/* video-call.component.css */
+.video-call {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.videos {
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+  position: absolute;
+  gap: 30px;
+}
+
+video {
+  width: 50%;
+  height: auto;
+  border: 1px solid #ccc;
+}

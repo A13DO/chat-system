@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 100px;
+  border-bottom: gainsboro solid 1px;
+  background-color: var(--header-background-color);
+  border-radius: 0 0 10px 10px;
+  margin: 0 15px 0 60px;
+  /* margin: 0 15px 0 15px; */
+}
+button {
+  cursor: pointer;
+  height: fit-content;
+  padding: 8px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #e24b22;
+  color: white;
+  font-weight: bold;
+}

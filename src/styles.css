@@ -1,1 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Default light theme */
+:root {
+  --background-color: #202022;
+  --text-color: #000000;
+  --header-background-color:#ffffff;
+  --chat-room-background-color:#ffffff;
+  --user-list-background-color:#ffffff;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0; /* Remove default padding */
+  font-family: sans-serif;
+
+}
+
+
+/* Dark theme */
+.dark-mode {
+  --background-color: #202022;
+  --text-color: #ffffff;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+/* #202022 black*/
+/* #f9fafc white*/
+
+/* #eeeef8 grey: reciver msg*/
+/* #7678ed purple: sender msg*/
+
+/* #ff7a55 orange: notification alert*/
+
+/* dark mode */
+/* #131a2b darkblue: chat background */
+/* #090e1a darkblue: aside */
+/* #0b1222 darkblue: users */

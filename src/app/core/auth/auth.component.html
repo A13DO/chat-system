@@ -1,0 +1,50 @@
+<main>
+  <form  #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+    <span>
+      <label for="username">Username: </label>
+      <input
+      type="text"
+      name="username"
+      id="username"
+      ngModel
+      required>
+      @if (UsernameError) {
+        <small style="color: red;">{{ UsernameError }}</small>
+      }
+    </span>
+    <span>
+      @if (!isLogin) {
+        <label for="email">Email </label>
+        <input
+        type="email"
+        name="email"
+        id="email"
+        ngModel
+        required>
+        @if (EmailError) {
+          <small style="color: red;">{{ EmailError }}</small>
+        }
+      }
+    </span>
+    <span>
+      <label for="password">Password</label>
+      <input
+      type="password"
+      name="password"
+      id="password"
+      email
+      ngModel
+      required>
+      @if (PasswordError) {
+        <small style="color: red;">{{ PasswordError }}</small>
+      }
+      @if (InvalidError) {
+        <small style="color: red;">{{ InvalidError }}</small>
+      }
+    </span>
+    <button class="login" type="submit">login</button>
+    @if (isLogin) {
+      <button class="register" type="button" (click)="switchToRegister()">Sign Up</button>
+    }
+  </form>
+</main>
