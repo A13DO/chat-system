@@ -16,7 +16,6 @@ export class AuthService {
     return this.http.post<UserData>("https://taskflutter.runasp.net/api/Auth/register", formData)
   }
   Login(username: string, password: string) {
-    console.log(username, password);
     // Send As form-data
     const formData = new FormData();
     formData.append('Username', username);

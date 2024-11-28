@@ -1,6 +1,6 @@
 <div class="video-call">
   <div class="videos">
-    <video #localVideo id="localVideo" autoplay ></video>
+    <video #localVideo id="localVideo" autoplay muted></video>
     <video #remoteVideo id="remoteVideo" autoplay></video>
     <label for="distPeerId" style="color: white;">call partner PeerID:</label>
     <input #distPeerId type="text" id="distPeerId">
@@ -10,5 +10,4 @@
   @if (peerID) {
     <p style="color: white; ">Your PeerID: {{ peerID }}</p>
   }
-
 </div>

@@ -51,7 +51,8 @@ export class VideoCallComponent {
     const videoElement = this.localVideo.nativeElement;
 
     videoElement.srcObject = stream;
-
+    const audioTracks = stream.getAudioTracks();
+    audioTracks.forEach(track => track.enabled = false);
     videoElement.play().catch((err: any) => {
       console.error('Error playing local video:', err);
     });
@@ -64,7 +65,6 @@ export class VideoCallComponent {
     // Answer incoming call
       call.answer(this.localStream);
       call.on('stream', (remoteStream) => {
-      console.log(remoteStream);
       this.remoteStream = remoteStream;
       const videoElement = this.remoteVideo.nativeElement;
       videoElement.srcObject = remoteStream;
