@@ -17,12 +17,12 @@ export class SocketIOService {
       console.log(`You connected with id`);
   })
   }
-  // Emit an event
+  // Emit
   emit(event: string, data: any): void {
     this.socket.emit(event, data);
   }
 
-  // Listen for an event
+  // Listen
   on(event: string, callback: (data: any) => void): void {
     this.socket.on(event, callback);
   }
@@ -32,8 +32,9 @@ export class SocketIOService {
     return [user1Id, user2Id].sort().join('_');
   }
   // join Room With Chat Partner
-  joinRoom(roomId: string): void {
-    this.socket.emit('joinRoom', roomId);
+  joinRoom(roomId: string, peerId: string = ''): void {
+    this.socket.emit('joinRoom', roomId, peerId);
+    // this.socket.emit('joinRoom', roomId);
   }
   // Send Message To Room
   sendMessage(roomId: string, message: Message): void {

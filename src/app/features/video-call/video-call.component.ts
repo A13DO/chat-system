@@ -1,24 +1,16 @@
-import { Component, ElementRef, ViewChild, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnDestroy, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Peer } from 'peerjs';
 // import { SignalRService } from '../../core/services/signal-r.service';
 // import { WebRTCService } from '../../core/services/web-rtc.service';
 import { Subscription } from 'rxjs';
-interface Signal {
-  type: 'offer' | 'answer' | 'candidate';
-  sdp?: string;        // Optional: Present for 'offer' and 'answer' types
-  candidate?: object;  // Optional: Present for 'candidate' type
-}
+import { PeerService } from '../../core/services/peer.service';
 @Component({
   selector: 'app-video-call',
   templateUrl: './video-call.component.html',
   styleUrls: ['./video-call.component.css']
 })
 export class VideoCallComponent {
-
-  // @ViewChild('localVideo') localVideo!: ElementRef;
-  // @ViewChild('remoteVideo') remoteVideo!: ElementRef;
-
 
   private senderId = localStorage.getItem("userId") as string;
   private peer!: Peer;
@@ -30,25 +22,27 @@ export class VideoCallComponent {
   @ViewChild('chat', { static: false }) chat!: ElementRef;
   @ViewChild('message', { static: false }) message!: ElementRef;
 
-  // @ViewChild('localVideo', { static: false }) localVideoElement!: HTMLVideoElement;
-  // @ViewChild('remoteVideo', { static: false }) remoteVideoElement!: HTMLVideoElement;
   @ViewChild('localVideo', { static: false }) localVideo!: ElementRef<any>;
   @ViewChild('remoteVideo', { static: false }) remoteVideo!: ElementRef<any>;
-
   constructor(
     // private signalRService: SignalRService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private peerService: PeerService
   ) {}
+  private DistPeerIdSubscription!: Subscription;
 
   ngOnInit() {
-    // this.route.params.subscribe(
-    //   params => {
-    //     this.destPeerID = params['peerID'];
-    //   }
-    // )
+    // get Dist Peer Id
+    this.DistPeerIdSubscription = this.peerService.distPeerId$
+    .subscribe(
+      (peerId) => {
+      console.log('Dist peerId:', peerId);
+      this.destPeerID = peerId;
+    });
   // PeerJs
   this.peer = new Peer().on('open', id =>{
     this.peerID = id;
+    this.peerService.updatePeerId(this.peerID);
   });
 
   navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -80,11 +74,11 @@ export class VideoCallComponent {
     this.currentCall = call;
   });
   }
-  startCall(): void {
-    console.log("start-call destID", this.destPeerID);
+  startCall(distPeerID: string): void {
+    console.log("start-call destID", distPeerID);
 
     // Call a peer with the ID `peerId`
-    const call = this.peer.call(this.destPeerID, this.localStream);
+    const call = this.peer.call(distPeerID, this.localStream);
     console.log(call);
     call.on('stream', (remoteStream) => {
       this.remoteStream = remoteStream;
@@ -105,6 +99,11 @@ export class VideoCallComponent {
     }
     if (this.localStream) {
       this.localStream.getTracks().forEach(track => track.stop());
+    }
+  }
+  ngOnDestroy() {
+    if (this.DistPeerIdSubscription) {
+      this.DistPeerIdSubscription.unsubscribe();
     }
   }
 }
