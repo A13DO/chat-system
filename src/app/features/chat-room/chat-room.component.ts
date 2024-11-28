@@ -32,6 +32,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   ) {}
   readonly DEFAULT: string = 'default';
   userId: string | undefined;
+  VidCallBtnContent: string = 'Video Call';
   SenderId!: string;
   ReceiverId!: string;
   RoomId!: string;
@@ -125,22 +126,24 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     newMessage.classList.add('chat-message');
 
     if (message.fromUsrId === this.SenderId) {
-      // Sender's message styles
       newMessage.style.textAlign = 'right';
-      newMessage.style.backgroundColor = 'rgb(32 32 34)';
+      newMessage.style.backgroundColor = '#7678ed';
       newMessage.style.margin = '5px 0 5px auto';
+      newMessage.style.color = 'white';
     } else {
-      // Receiver's message styles
       newMessage.style.textAlign = 'left';
-      newMessage.style.backgroundColor = 'rgb(32 32 34)';
+      newMessage.style.backgroundColor = '#eeeef8';
       newMessage.style.margin = '5px auto 5px 0';
+
     }
+    /* #eeeef8 grey: reciver msg*/
+    /* #7678ed purple: sender msg*/
     // common
     newMessage.style.padding = '10px';
     newMessage.style.borderRadius = '10px';
     newMessage.style.maxWidth = '80%';
     newMessage.style.textWrap = 'break-word';
-    newMessage.style.color = 'white';
+    newMessage.style.fontWeight = 'bold';
 
     this.chat.nativeElement.appendChild(newMessage);
   }

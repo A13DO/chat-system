@@ -13,12 +13,24 @@
     } @else {
       <h1>Chat Room:</h1>
     }
-    <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%' }"></section>
+    <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%', left: isVideoCall ? '50%' : '40%' }"></section>
     <label for="message-bar">user: {{ SenderId }}</label>
     <span for="message-bar">chat partner: {{ ReceiverId }}</span>
     <input #message type="text" id="message-bar">
-    <button class="btn" type="button" style="width: fit-content" (click)="onSendMessage()">Send</button>
-    <button class="btn" style="left: 88%" type="button" (click)="videoCallToggle()">Video Call</button>
+    <button
+    class="btn"
+    type="button"
+    style="width: fit-content"
+    (click)="onSendMessage()"
+    [disabled]="ReceiverId == DEFAULT">Send</button>
+      <button class="btn"
+      [disabled]="ReceiverId == DEFAULT"
+      style="left: 88%"
+      type="button"
+      (click)="videoCallToggle()">
+      {{ !isVideoCall ? "Video Call": "Close"}}
+    </button>
+
   </main>
   @if (isVideoCall && ReceiverId !== DEFAULT) {
     <app-video-call style="flex: 1; transition: 1s;"></app-video-call>
