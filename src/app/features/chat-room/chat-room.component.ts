@@ -29,7 +29,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   SenderId!: string;
   ReceiverId!: string;
   RoomId!: string;
-  messagesHistory!: any;
+  messagesHistory: any = [];
   saveMessage!: Message;
   chatMsg: string | undefined;
   private peer!: Peer;

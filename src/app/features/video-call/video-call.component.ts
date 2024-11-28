@@ -45,11 +45,7 @@ export class VideoCallComponent {
     //   }
     // )
   // PeerJs
-  this.peer = new Peer('', {
-    host: 'localhost',
-    port: 8000,
-    path: '/'
-  }).on('open', id =>{
+  this.peer = new Peer().on('open', id =>{
     this.peerID = id;
   });
 
