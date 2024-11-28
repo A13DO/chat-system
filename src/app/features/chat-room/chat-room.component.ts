@@ -32,7 +32,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   ) {}
   readonly DEFAULT: string = 'default';
   userId: string | undefined;
-  VidCallBtnContent: string = 'Video Call';
   SenderId!: string;
   ReceiverId!: string;
   RoomId!: string;

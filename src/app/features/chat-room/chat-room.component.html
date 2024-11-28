@@ -9,27 +9,28 @@
     <!-- If SenderId == fromUsrId => Right-->
     <!-- If SenderId == toUsrId => left -->
     @if (ReceiverId === DEFAULT) {
+      <label for="message-bar">user: {{ SenderId }}</label>
       <h3 class="place-holder">Select chat to start messaging</h3>
     } @else {
       <h1>Chat Room:</h1>
-    }
-    <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%', left: isVideoCall ? '50%' : '40%' }"></section>
-    <label for="message-bar">user: {{ SenderId }}</label>
-    <span for="message-bar">chat partner: {{ ReceiverId }}</span>
-    <input #message type="text" id="message-bar">
-    <button
-    class="btn"
-    type="button"
-    style="width: fit-content"
-    (click)="onSendMessage()"
-    [disabled]="ReceiverId == DEFAULT">Send</button>
-      <button class="btn"
-      [disabled]="ReceiverId == DEFAULT"
-      style="left: 88%"
+      <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%', left: isVideoCall ? '50%' : '40%' }"></section>
+      <label for="message-bar">user: {{ SenderId }}</label>
+      <span for="message-bar">chat partner: {{ ReceiverId }}</span>
+      <input #message type="text" id="message-bar">
+      <button
+      class="btn"
       type="button"
-      (click)="videoCallToggle()">
-      {{ !isVideoCall ? "Video Call": "Close"}}
-    </button>
+      style="width: fit-content"
+      (click)="onSendMessage()"
+      [disabled]="ReceiverId == DEFAULT">Send</button>
+        <button class="btn"
+        [disabled]="ReceiverId == DEFAULT"
+        style="left: 88%"
+        type="button"
+        (click)="videoCallToggle()">
+        {{ !isVideoCall ? "Video Call": "Close"}}
+      </button>
+    }
 
   </main>
   @if (isVideoCall && ReceiverId !== DEFAULT) {
