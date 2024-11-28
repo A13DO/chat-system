@@ -33,3 +33,8 @@ button {
 p {
   margin-top: 15px;
 }
+#distPeerId {
+  padding: 5px;
+  width: 50%;
+  border-radius: 8px;
+}
