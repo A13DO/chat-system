@@ -16,8 +16,8 @@ interface Signal {
 })
 export class VideoCallComponent {
 
-  @ViewChild('localVideo') localVideo!: ElementRef;
-  @ViewChild('remoteVideo') remoteVideo!: ElementRef;
+  // @ViewChild('localVideo') localVideo!: ElementRef;
+  // @ViewChild('remoteVideo') remoteVideo!: ElementRef;
 
 
   private senderId = localStorage.getItem("userId") as string;
@@ -30,8 +30,10 @@ export class VideoCallComponent {
   @ViewChild('chat', { static: false }) chat!: ElementRef;
   @ViewChild('message', { static: false }) message!: ElementRef;
 
-  @ViewChild('localVideo', { static: false }) localVideoElement!: HTMLVideoElement;
-  @ViewChild('remoteVideo', { static: false }) remoteVideoElement!: HTMLVideoElement;
+  // @ViewChild('localVideo', { static: false }) localVideoElement!: HTMLVideoElement;
+  // @ViewChild('remoteVideo', { static: false }) remoteVideoElement!: HTMLVideoElement;
+  @ViewChild('localVideo', { static: false }) localVideo!: ElementRef<any>;
+  @ViewChild('remoteVideo', { static: false }) remoteVideo!: ElementRef<any>;
 
   constructor(
     // private signalRService: SignalRService,
@@ -52,29 +54,43 @@ export class VideoCallComponent {
   navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   .then(stream => {
     this.localStream = stream;
-    console.log(this.localStream);
+    const videoElement = this.localVideo.nativeElement;
 
-    this.localVideoElement.srcObject = stream; // Display local stream
+    videoElement.srcObject = stream;
+
+    videoElement.play().catch((err: any) => {
+      console.error('Error playing local video:', err);
+    });
   })
-  .catch(err => console.error("Failed to get media:", err));
+  .catch(err => {
+    console.error('Error accessing media devices:', err);
+  });
    // Listen for incoming calls
     this.peer.on('call', (call) => {
     // Answer incoming call
-    call.answer(this.localStream);
-    call.on('stream', (remoteStream) => {
+      call.answer(this.localStream);
+      call.on('stream', (remoteStream) => {
+      console.log(remoteStream);
       this.remoteStream = remoteStream;
-      this.remoteVideoElement.srcObject = remoteStream; // Display remote stream
+      const videoElement = this.remoteVideo.nativeElement;
+      videoElement.srcObject = remoteStream;
+      // this.remoteVideoElement.srcObject = remoteStream; // Display remote stream
     });
 
     this.currentCall = call;
   });
   }
   startCall(): void {
+    console.log("start-call destID", this.destPeerID);
+
     // Call a peer with the ID `peerId`
     const call = this.peer.call(this.destPeerID, this.localStream);
+    console.log(call);
     call.on('stream', (remoteStream) => {
       this.remoteStream = remoteStream;
-      this.remoteVideoElement.srcObject = remoteStream; // Display remote stream
+      const videoElement = this.remoteVideo.nativeElement;
+      videoElement.srcObject = remoteStream;
+      // this.remoteVideoElement.srcObject = remoteStream; // Display remote stream
     });
 
     this.currentCall = call;
