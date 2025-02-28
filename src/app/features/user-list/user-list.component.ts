@@ -27,14 +27,15 @@ export class UserListComponent {
     this.SenderId = localStorage.getItem("userId") as string;
     this.authService.getAllUsers().subscribe(
       reposnseData => {
+        console.log(reposnseData);
         this.users = reposnseData;
       }
     )
   }
   async startChat(user: any) {
-    await this.router.navigate(['chat-room', user.id]);
+    await this.router.navigate(['chat-room', user._id]);
     location.reload()
-    this.RoomId = this.socketIOService.createRoomId(this.SenderId, user.id)
+    this.RoomId = this.socketIOService.createRoomId(this.SenderId, user._id)
     this.socketIOService.joinRoom(this.RoomId)
   }
 }

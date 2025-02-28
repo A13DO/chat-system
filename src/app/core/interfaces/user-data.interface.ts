@@ -1,6 +1,6 @@
 export interface UserData {
   email: string;
-  id: string;
+  uid: string;
   role: string;
   token: string;
   validTO: string;

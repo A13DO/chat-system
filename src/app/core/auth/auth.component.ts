@@ -42,7 +42,7 @@ export class AuthComponent {
       ).subscribe({
         next: (response: UserData) => {
           localStorage.setItem("userToken", response.token);
-          localStorage.setItem("userId", response.id);
+          localStorage.setItem("userId", response.uid);
           location.reload()
         },
         error: (error) => {
@@ -58,8 +58,10 @@ export class AuthComponent {
         form.controls["password"].value
       ).subscribe({
         next: (response: UserData) => {
+          console.log(response);
+
           localStorage.setItem("userToken", response.token);
-          localStorage.setItem("userId", response.id);
+          localStorage.setItem("userId", response.uid);
           location.reload()
         },
         error: (error) => {

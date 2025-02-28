@@ -1,7 +1,7 @@
 <h3>Members</h3>
 <ul>
   @for (user of users; track $index) {
-    <li (click)="startChat(user)"><span class="user-icon">{{ user.userName[0] }}</span>{{ user.userName }}</li>
+    <li (click)="startChat(user)"><span class="user-icon">{{ user.name[0] }}</span>{{ user.name }}</li>
   }
 </ul>
 <!-- [routerLink]="'/products/' + product._id" -->
