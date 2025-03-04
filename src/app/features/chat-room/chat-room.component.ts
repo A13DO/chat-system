@@ -111,8 +111,12 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
 
   // Chat Logic
   onSendMessage() {
-    console.log(this.message.nativeElement.value);
-    const newMessage: Message = {
+    const messageText = this.message.nativeElement.value.trim();
+
+    if (!messageText) {
+      return;
+    }
+      const newMessage: Message = {
       text: this.message.nativeElement.value,
       fromUsrId: this.SenderId,
       toUsrId: this.ReceiverId,
@@ -120,7 +124,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     };
     this.socketIOService.saveMessages(this.RoomId, newMessage)
     this.socketIOService.sendMessage(this.RoomId, newMessage)
-
+    this.message.nativeElement.value = '';
   }
 
   displayMessage(message: Message) {
