@@ -48,3 +48,6 @@ body {
 /* #131a2b darkblue: chat background */
 /* #090e1a darkblue: aside */
 /* #0b1222 darkblue: users */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

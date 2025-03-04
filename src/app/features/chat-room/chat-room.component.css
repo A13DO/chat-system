@@ -1,4 +1,6 @@
-
+* {
+  box-sizing: border-box;
+}
 .container {
   display: flex;
   flex-direction: row;
@@ -44,6 +46,7 @@ main h3.place-holder {
   width: 50%;
   padding: 8px 16px;
   position: absolute;
+  height: 45px;
   bottom: 30px;
   left: 110px;
   border-radius: 10px;
@@ -54,6 +57,7 @@ main h3.place-holder {
   padding: 8px 25px;
   cursor: pointer;
   bottom: 30px;
+  height: 45px;
   position: absolute;
   left: 65%;
   border-radius: 10px;
@@ -140,4 +144,23 @@ video {
   width: 50%;
   height: auto;
   border: 1px solid #ccc;
+}
+
+
+/* .example-container {
+  width: 500px;
+  height: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+} */
+
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-sidenav {
+  padding: 20px;
+  width: 50%;
 }

@@ -9,7 +9,8 @@ import { Peer } from 'peerjs';
 import { VideoCallComponent } from '../video-call/video-call.component';
 import { PeerService } from '../../core/services/peer.service';
 import { Subscription } from 'rxjs';
-
+import {MatButtonModule} from '@angular/material/button';
+import {MatSidenavModule} from '@angular/material/sidenav';
 export interface Message {
   text: string;
   fromUsrId: string;
@@ -19,7 +20,7 @@ export interface Message {
 @Component({
   selector: 'app-chat-room',
   standalone: true,
-  imports: [UserListComponent, HeaderComponent, CommonModule, VideoCallComponent],
+  imports: [UserListComponent, MatButtonModule, MatSidenavModule, HeaderComponent, CommonModule, VideoCallComponent],
   providers: [SocketIOService],
   templateUrl: './chat-room.component.html',
   styleUrl: './chat-room.component.css'
@@ -36,6 +37,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   ReceiverId!: string;
   RoomId!: string;
   myPeerId!: string;
+  showFiller = false;
+
+
   // distPeerId: string = "";
   messagesHistory: any = [];
   saveMessage!: Message;

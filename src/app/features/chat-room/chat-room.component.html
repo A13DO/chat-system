@@ -1,39 +1,49 @@
 <header>
   <app-header></app-header>
 </header>
+
 <div class="container">
   <aside>
     <app-user-list></app-user-list>
   </aside>
   <main>
-    <!-- If SenderId == fromUsrId => Right-->
-    <!-- If SenderId == toUsrId => left -->
-    @if (ReceiverId === DEFAULT) {
-      <label for="message-bar">user: {{ SenderId }}</label>
-      <h3 class="place-holder">Select chat to start messaging</h3>
-    } @else {
-      <h1>Chat Room:</h1>
-      <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%', left: isVideoCall ? '50%' : '40%' }"></section>
-      <label for="message-bar">user: {{ SenderId }}</label>
-      <span for="message-bar">chat partner: {{ ReceiverId }}</span>
-      <input #message type="text" id="message-bar">
-      <button
-      class="btn"
-      type="button"
-      style="width: fit-content"
-      (click)="onSendMessage()"
-      [disabled]="ReceiverId == DEFAULT">Send</button>
-        <button class="btn"
-        [disabled]="ReceiverId == DEFAULT"
-        style="left: 88%"
-        type="button"
-        (click)="videoCallToggle()">
-        {{ !isVideoCall ? "Video Call": "Close"}}
-      </button>
-    }
+    <mat-drawer-container class="example-container" style="height: 100%;" autosize>
 
+      @if (ReceiverId === DEFAULT) {
+        <label for="message-bar">user: {{ SenderId }}</label>
+        <h3 class="place-holder">Select chat to start messaging</h3>
+      } @else {
+        <h1>Chat Room:</h1>
+        <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%', left: isVideoCall ? '50%' : '40%' }"></section>
+        <label for="message-bar">user: {{ SenderId }}</label>
+        <span for="message-bar">chat partner: {{ ReceiverId }}</span>
+
+        <input #message type="text" id="message-bar">
+        <button
+        class="btn"
+        type="button"
+        style="width: fit-content"
+        (click)="onSendMessage()"
+        [disabled]="ReceiverId == DEFAULT">Send</button>
+        <div class="example-sidenav-content">
+          <button class="btn"
+          [disabled]="ReceiverId == DEFAULT"
+          style="left: 85%"
+          type="button"
+          (click)="videoCallToggle()"
+          (click)="drawer.toggle()"
+          mat-button>
+          {{ !isVideoCall ? "Video Call": "Close"}}
+        </button>
+        </div>
+      }
+
+      <mat-drawer #drawer [position]="'end'" class="example-sidenav" mode="side">
+        @if (isVideoCall && ReceiverId !== DEFAULT) {
+          <app-video-call style="flex: 1; transition: 1s; overflow-y: auto; height: 100%;"></app-video-call>
+        }
+      </mat-drawer>
+    </mat-drawer-container>
   </main>
-  @if (isVideoCall && ReceiverId !== DEFAULT) {
-    <app-video-call style="flex: 1; transition: 1s; overflow-y: auto;"></app-video-call>
-  }
+
 </div>
