@@ -63,7 +63,7 @@ main h3.place-holder {
   border: 2px black solid;
   background-color: #222222;
   color: white;
-  font-weight: bold;
+  font-weight: normal;
 }
 .chat {
   position: absolute;

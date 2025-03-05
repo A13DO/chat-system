@@ -20,6 +20,7 @@ export class UserListComponent {
 
   }
   users: any;
+  filteredUsers: any[] = []; // List of users excluding the sender
   SenderId!: string;
   ReceiverId!: string;
   RoomId!: string;
@@ -29,6 +30,7 @@ export class UserListComponent {
       reposnseData => {
         console.log(reposnseData);
         this.users = reposnseData;
+        this.filteredUsers = this.users.filter((user: any) => user._id !== this.SenderId);
       }
     )
   }

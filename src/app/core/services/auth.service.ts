@@ -36,4 +36,7 @@ export class AuthService {
   getAllUsers(){
     return this.http.get(`https://crud-1a1m.onrender.com/api/v1/users`);
   }
+  getUserId(id: string){
+    return this.http.get(`https://crud-1a1m.onrender.com/api/v1/users/${id}`);
+  }
 }

@@ -11,6 +11,8 @@ import { PeerService } from '../../core/services/peer.service';
 import { Subscription } from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { AuthService } from '../../core/services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 export interface Message {
   text: string;
   fromUsrId: string;
@@ -20,14 +22,15 @@ export interface Message {
 @Component({
   selector: 'app-chat-room',
   standalone: true,
-  imports: [UserListComponent, MatButtonModule, MatSidenavModule, HeaderComponent, CommonModule, VideoCallComponent],
-  providers: [SocketIOService],
+  imports: [UserListComponent, MatButtonModule, MatSidenavModule, HeaderComponent, CommonModule, VideoCallComponent, HttpClientModule],
+  providers: [SocketIOService, AuthService],
   templateUrl: './chat-room.component.html',
   styleUrl: './chat-room.component.css'
 })
 export class ChatRoomComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
+    private authService: AuthService,
     private socketIOService: SocketIOService,
     private peerService: PeerService
   ) {}
@@ -38,7 +41,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   RoomId!: string;
   myPeerId!: string;
   showFiller = false;
-
+  chatPartnerData: any = [];
 
   // distPeerId: string = "";
   messagesHistory: any = [];
@@ -58,15 +61,18 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // let messages: Message[] = [];
     this.SenderId = localStorage.getItem("userId") as string;
-    this.routeParamSubscription =
-    this.route.params.subscribe(
-      params => {
-        this.ReceiverId = params['id'] || this.DEFAULT;
-      }
-    )
+
+    // this.routeParamSubscription =
+    // this.route.params.subscribe(
+    //   params => {
+    //     this.ReceiverId = params['id'] || this.DEFAULT;
+    //     console.log(this.ReceiverId);
+    //   }
+    // )
     this.routeParamMapSubscription =
     this.route.paramMap.subscribe(params => {
       this.ReceiverId = params.get('id') || this.DEFAULT;
+      this.onGetUserbyId(this.ReceiverId)
     });
     // get Room ID
     this.RoomId = this.socketIOService.createRoomId(this.SenderId, this.ReceiverId)
@@ -150,7 +156,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     newMessage.style.borderRadius = '10px';
     newMessage.style.maxWidth = '80%';
     newMessage.style.textWrap = 'break-word';
-    newMessage.style.fontWeight = 'bold';
+    newMessage.style.fontWeight = 'normal';
 
     this.chat.nativeElement.appendChild(newMessage);
   }
@@ -160,6 +166,14 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     } else {
       this.isVideoCall = true
     }
+  }
+  onGetUserbyId(userId: any) {
+    this.authService.getUserId(userId).subscribe({
+      next: (res) => {
+        console.log(res)
+        this.chatPartnerData = res;
+      }
+    })
   }
   ngOnDestroy() {
     if (this.peerIdSubscription) {
