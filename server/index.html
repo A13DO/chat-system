@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat | socket.io</title>
+
+</head>
+<body>
+    <style>
+        * {
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+        button {
+            cursor: pointer;
+        }
+        #chat {
+            overflow: auto;
+            height: 350px;
+            position: relative;
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="./main.js" defer></script>
+    <div style="width: fit-content; margin: 15% auto;">
+        <div id="chat" ><span>Chat: </span><br></div>
+        <span>Message: </span> 
+        <input type="text" id="sendMessage" placeholder="Enter message">
+        <button onclick="onSendMessage()">Send</button>
+        <br>
+        <span>Room: </span> 
+        <input type="text" id="roomName" placeholder="Enter room name">
+        <button onclick="joinRoom()">join</button>
+    </div>
+
+</body>
+</html>

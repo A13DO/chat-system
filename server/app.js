@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io"); // Ensure this line is correct
+const authRouter = require("./routes/auth"); // Ensure this line is correct
+const usersRouter = require("./routes/users"); // Ensure this line is correct
+const connectDB = require("./db/connect");
 
 const app = express();
 const server = http.createServer(app);
@@ -21,9 +24,11 @@ app.use(cors({
 }));
 
 // Middleware
+app.use(express.json()); 
 
-// // Serve static files from the public directory
-// app.use(express.static('public'));
+// Serve static files from the public directory
+app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/users", usersRouter)
 
 const users = {};
 // Socket.IO connection
@@ -65,7 +70,25 @@ const selfReload = () => {
 };
 
 const PORT = process.env.PORT || 3000; // Use environment variable or default to 3000
-server.listen(PORT, () => {
-    selfReload()
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// server.listen(PORT, () => {
+//     selfReload()
+//     console.log(`Server is running on http://localhost:${PORT}`);
+// });
+
+const start = async () => {
+    try {
+        await connectDB(process.env.MONGO_URI)
+        .then(()=> console.log("Connected to DB"))
+        .catch((err)=> console.log(err))
+        // app.listen(port, () => console.log(`Listening on port ${port}`))
+        server.listen(PORT, () => {
+            selfReload()
+            console.log(`Server is running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+start()
+
