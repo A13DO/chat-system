@@ -1,50 +1,67 @@
 <main>
-  <form  #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+  <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+    <h2>{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h2>
+    <p class="form-description">
+      {{ isLogin ? 'Sign in to continue' : 'Join us today' }}
+    </p>
+
     <span>
-      <label for="username">Username: </label>
+      <label for="username">Username</label>
       <input
-      type="text"
-      name="username"
-      id="username"
-      ngModel
-      required>
+        type="text"
+        name="username"
+        id="username"
+        ngModel
+        required
+        placeholder="Enter your username">
       @if (UsernameError) {
-        <small style="color: red;">{{ UsernameError }}</small>
+        <small class="error-message">{{ UsernameError }}</small>
       }
     </span>
+
     <span>
       @if (!isLogin) {
-        <label for="email">Email </label>
+        <label for="email">Email</label>
         <input
-        type="email"
-        name="email"
-        id="email"
-        ngModel
-        required>
+          type="email"
+          name="email"
+          id="email"
+          ngModel
+          required
+          placeholder="Enter your email">
         @if (EmailError) {
-          <small style="color: red;">{{ EmailError }}</small>
+          <small class="error-message">{{ EmailError }}</small>
         }
       }
     </span>
+
     <span>
       <label for="password">Password</label>
       <input
-      type="password"
-      name="password"
-      id="password"
-      email
-      ngModel
-      required>
+        type="password"
+        name="password"
+        id="password"
+        email
+        ngModel
+        required
+        placeholder="••••••••">
       @if (PasswordError) {
-        <small style="color: red;">{{ PasswordError }}</small>
+        <small class="error-message">{{ PasswordError }}</small>
       }
       @if (InvalidError) {
-        <small style="color: red;">{{ InvalidError }}</small>
+        <small class="error-message">{{ InvalidError }}</small>
       }
     </span>
-    <button class="login" type="submit">login</button>
-    @if (isLogin) {
-      <button class="register" type="button" (click)="switchToRegister()">Sign Up</button>
-    }
+
+    <button class="login" type="submit">
+      {{ isLogin ? 'Log In' : 'Sign Up' }}
+    </button>
+
+    <p class="toggle-mode">
+      {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+      <a (click)="switchToRegister()" class="toggle-link">
+        {{ isLogin ? 'Sign up' : 'Log in' }}
+      </a>
+    </p>
   </form>
 </main>
