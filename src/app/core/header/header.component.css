@@ -5,9 +5,9 @@
   justify-content: space-between;
   padding: 12px 100px;
   border-bottom: gainsboro solid 1px;
-  background-color: var(--header-background-color);
-  border-radius: 0 0 10px 10px;
-  margin: 0 15px 0 15px;
+  background-color: #eee6e6;
+  /* border-radius: 0 0 10px 10px; */
+  /* margin: 0 15px 0 15px; */
   /* margin: 0 15px 0 15px; */
 }
 button {

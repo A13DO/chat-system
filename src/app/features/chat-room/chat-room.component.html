@@ -6,44 +6,46 @@
   <aside>
     <app-user-list></app-user-list>
   </aside>
+
   <main>
     <mat-drawer-container class="example-container" style="height: 100%;" autosize>
-
-      @if (ReceiverId === DEFAULT) {
-        <!-- <label for="message-bar">user: {{ SenderId }}</label> -->
-        <h3 class="place-holder">Select chat to start messaging</h3>
-      } @else {
-        <h1>Chat Room:</h1>
-        <section #chat class="chat" [ngStyle]="{ width: isVideoCall ? '90%' : '50%', left: isVideoCall ? '50%' : '40%' }"></section>
-        <!-- <label for="message-bar">user: {{ SenderId }}</label> -->
-        <span for="message-bar">chat partner: {{ chatPartnerData.name }}</span>
-
-        <input #message type="text" id="message-bar">
-        <button
-        class="btn"
-        type="button"
-        style="width: fit-content"
-        (click)="onSendMessage()"
-        [disabled]="ReceiverId == DEFAULT">Send</button>
-        <div class="example-sidenav-content">
-          <button class="btn"
-          [disabled]="ReceiverId == DEFAULT"
-          style="left: 85%; color: white;"
-          type="button"
-          (click)="videoCallToggle()"
-          (click)="drawer.toggle()"
-          mat-button>
-          {{ !isVideoCall ? "Video Call": "Close"}}
-        </button>
+      <mat-drawer-content>
+        @if (ReceiverId === DEFAULT) {
+        <h3 class="place-holder">Select a chat to start messaging</h3>
+        } @else {
+        <div class="chat-header">
+          <div class="chat-info">
+            <h1>Chat Room</h1>
+            <span>Chatting with: {{ chatPartnerData.name }}</span>
+          </div>
+          <div class="chat-header-actions">
+            <button class="video-call-icon" [disabled]="ReceiverId == DEFAULT" type="button"
+              (click)="videoCallToggle(); drawer.toggle()" mat-button>
+              <span class="material-icons">video_camera_front</span>
+            </button>
+          </div>
         </div>
-      }
+
+        <section #chat class="chat"></section>
+
+        <div class="message-input-container">
+          <input #message type="text" id="message-bar" placeholder="Type your message...">
+          <button class="btn" type="button" (click)="onSendMessage()" [disabled]="ReceiverId == DEFAULT">
+            Send
+          </button>
+        </div>
+        }
+      </mat-drawer-content>
 
       <mat-drawer #drawer [position]="'end'" class="example-sidenav" mode="side">
         @if (isVideoCall && ReceiverId !== DEFAULT) {
-          <app-video-call style="flex: 1; transition: 1s; overflow-y: auto; height: 100%;"></app-video-call>
+        <app-video-call></app-video-call>
         }
       </mat-drawer>
     </mat-drawer-container>
   </main>
-
 </div>
+
+<script>
+  lucide.createIcons();
+</script>
