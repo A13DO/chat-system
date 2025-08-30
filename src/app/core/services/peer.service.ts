@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PeerService {
-  private peerIdSubject = new BehaviorSubject<string>('');
-  private distPeerIdSubject = new BehaviorSubject<string>('');
-  peerId$ = this.peerIdSubject.asObservable(); // Observable to subscribe to
-  distPeerId$ = this.distPeerIdSubject.asObservable(); // Observable to subscribe to
+  private peerIdSubject = new BehaviorSubject<string>(''); // my peerId
+  private distPeerIdSubject = new BehaviorSubject<string>(''); // remote peerId
+
+  peerId$ = this.peerIdSubject.asObservable();
+  distPeerId$ = this.distPeerIdSubject.asObservable();
 
   constructor() {}
 
@@ -19,11 +20,13 @@ export class PeerService {
   getPeerId(): string {
     return this.peerIdSubject.getValue();
   }
+
   updateDistPeerId(peerId: string): void {
-    this.peerIdSubject.next(peerId);
+    console.log('dist peer id received:', peerId);
+    this.distPeerIdSubject.next(peerId); // ✅ fixed
   }
 
   getDistPeerId(): string {
-    return this.peerIdSubject.getValue();
+    return this.distPeerIdSubject.getValue();
   }
 }

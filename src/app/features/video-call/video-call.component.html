@@ -2,13 +2,13 @@
   <div class="videos">
     <video #localVideo id="localVideo" autoplay muted></video>
     <video #remoteVideo id="remoteVideo" autoplay></video>
-    <small style="color: white;">Note: Ask other user for his PeerID paste it and start call </small>
+    <!-- <small style="color: white;">Note: Ask other user for his PeerID paste it and start call </small> -->
     <!-- <label for="distPeerId" style="color: white;">enter PeerID:</label> -->
     <input #distPeerId type="text" id="distPeerId" placeholder="other user's PeerId">
-    <button style="background-color: #22e275;" (click)="startCall(distPeerId.value)">Start Call</button>
+    <!-- <button style="background-color: #22e275;" (click)="startCall(distPeerId.value)">Start Call</button> -->
     <button style="background-color: #e24b22;" (click)="endCall()">End Call</button>
   </div>
-  @if (peerID) {
+  <!-- @if (peerID) {
     <p style="color: white; ">Your PeerID: {{ peerID }}</p>
-  }
+  } -->
 </div>

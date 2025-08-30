@@ -1,5 +1,11 @@
 // import { SignalRService } from './../../core/services/signal-r.service';
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserListComponent } from '../user-list/user-list.component';
 import { HeaderComponent } from '../../core/header/header.component';
@@ -9,8 +15,8 @@ import { Peer } from 'peerjs';
 import { VideoCallComponent } from '../video-call/video-call.component';
 import { PeerService } from '../../core/services/peer.service';
 import { Subscription } from 'rxjs';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSidenavModule} from '@angular/material/sidenav';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 export interface Message {
@@ -22,10 +28,18 @@ export interface Message {
 @Component({
   selector: 'app-chat-room',
   standalone: true,
-  imports: [UserListComponent, MatButtonModule, MatSidenavModule, HeaderComponent, CommonModule, VideoCallComponent, HttpClientModule],
+  imports: [
+    UserListComponent,
+    MatButtonModule,
+    MatSidenavModule,
+    HeaderComponent,
+    CommonModule,
+    VideoCallComponent,
+    HttpClientModule,
+  ],
   providers: [SocketIOService, AuthService],
   templateUrl: './chat-room.component.html',
-  styleUrl: './chat-room.component.css'
+  styleUrl: './chat-room.component.css',
 })
 export class ChatRoomComponent implements OnInit, OnDestroy {
   constructor(
@@ -57,10 +71,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   private routeParamMapSubscription!: Subscription;
   private socketMessageSubscription!: Subscription;
 
-
   ngOnInit(): void {
     // let messages: Message[] = [];
-    this.SenderId = localStorage.getItem("userId") as string;
+    this.SenderId = localStorage.getItem('userId') as string;
 
     // this.routeParamSubscription =
     // this.route.params.subscribe(
@@ -69,51 +82,57 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     //     console.log(this.ReceiverId);
     //   }
     // )
-    this.routeParamMapSubscription =
-    this.route.paramMap.subscribe(params => {
+    this.routeParamMapSubscription = this.route.paramMap.subscribe((params) => {
       this.ReceiverId = params.get('id') || this.DEFAULT;
-      this.onGetUserbyId(this.ReceiverId)
+      this.onGetUserbyId(this.ReceiverId);
     });
     // get Room ID
-    this.RoomId = this.socketIOService.createRoomId(this.SenderId, this.ReceiverId)
+    this.RoomId = this.socketIOService.createRoomId(
+      this.SenderId,
+      this.ReceiverId
+    );
     // get Peer ID for video call
-    this.peerIdSubscription =
-    this.peerService.peerId$.subscribe((peerId) => {
+    this.peerIdSubscription = this.peerService.peerId$.subscribe((peerId) => {
       this.myPeerId = peerId;
-      console.log('Received peerId:', peerId);
-      this.onJoinRoom(this.RoomId, this.myPeerId)
+      // console.log('Received peerId:', peerId);
+      this.onJoinRoom(this.RoomId, this.myPeerId);
     });
     // Join Room
-    this.socketMessageSubscription =
-    this.socketIOService.getMessages(this.RoomId).subscribe(
-      (responseData: any) => {
+    this.socketMessageSubscription = this.socketIOService
+      .getMessages(this.RoomId)
+      .subscribe((responseData: any) => {
         this.messagesHistory = responseData;
         Object.entries(responseData).forEach(([key, message]) => {
-          this.displayMessage(message as Message)
+          this.displayMessage(message as Message);
         });
-      }
-    )
+      });
     this.socketIOService.on('chat-room', (data: any) => {
       this.displayMessage(data);
     });
+
     this.socketIOService.on('newPeer', (data: any) => {
-      console.log('New peer connected:', data.peerId);
+      // if (!this.loggedNewPeer) {
+      //   console.log('New peer connected data:', data);
+      //   console.log('New peer connected:', data.peerId);
+      //   this.loggedNewPeer = true; // 👈 mark as logged
+      // }
+
       if (data && data.peerId) {
-        this.peerService.updateDistPeerId(data.peerId);  // Update peerId in service
+        this.peerService.updateDistPeerId(data.peerId); // Update peerId in service
       } else {
         console.error('PeerId not found in data:', data);
       }
     });
-          // send Send this to app-video as DistPeer Id
-      // and startCall()to receive open the call with call partner
+    // send Send this to app-video as DistPeer Id
+    // and startCall()to receive open the call with call partner
   }
+  private loggedNewPeer = false; // 👈 add this in your component
 
   onJoinRoom(roomId: string, peerId: string) {
-    console.log("from onJoinRoom:", roomId, "peerID:", peerId);
+    // console.log("from onJoinRoom:", roomId, "peerID:", peerId);
 
-    this.socketIOService.joinRoom(roomId, peerId)
+    this.socketIOService.joinRoom(roomId, peerId);
   }
-
 
   // Chat Logic
   onSendMessage() {
@@ -122,14 +141,14 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     if (!messageText) {
       return;
     }
-      const newMessage: Message = {
+    const newMessage: Message = {
       text: this.message.nativeElement.value,
       fromUsrId: this.SenderId,
       toUsrId: this.ReceiverId,
       timeStamp: new Date(),
     };
-    this.socketIOService.saveMessages(this.RoomId, newMessage)
-    this.socketIOService.sendMessage(this.RoomId, newMessage)
+    this.socketIOService.saveMessages(this.RoomId, newMessage);
+    this.socketIOService.sendMessage(this.RoomId, newMessage);
     this.message.nativeElement.value = '';
   }
 
@@ -147,7 +166,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
       newMessage.style.textAlign = 'left';
       newMessage.style.backgroundColor = '#eeeef8';
       newMessage.style.margin = '5px auto 5px 0';
-
     }
     /* #eeeef8 grey: reciver msg*/
     /* #7678ed purple: sender msg*/
@@ -162,18 +180,18 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   }
   videoCallToggle() {
     if (this.isVideoCall == true) {
-      this.isVideoCall = false
+      this.isVideoCall = false;
     } else {
-      this.isVideoCall = true
+      this.isVideoCall = true;
     }
   }
   onGetUserbyId(userId: any) {
     this.authService.getUserId(userId).subscribe({
       next: (res) => {
-        console.log(res)
+        // console.log(res);
         this.chatPartnerData = res;
-      }
-    })
+      },
+    });
   }
   ngOnDestroy() {
     if (this.peerIdSubscription) {
@@ -191,4 +209,3 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     this.socketIOService.disconnect();
   }
 }
-
