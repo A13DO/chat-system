@@ -20,7 +20,7 @@
           </div>
           <div class="chat-header-actions">
             <button class="video-call-icon" [disabled]="ReceiverId == DEFAULT" type="button"
-              (click)="videoCallToggle(); drawer.toggle()" mat-button>
+              (click)="drawer.toggle(); isVideoCall=true" mat-button>
               <span class="material-icons">video_camera_front</span>
             </button>
           </div>
@@ -38,10 +38,10 @@
       </mat-drawer-content>
 
       <mat-drawer #drawer [position]="'end'" class="example-sidenav" mode="side">
-        @if (isVideoCall && ReceiverId !== DEFAULT) {
-        <app-video-call></app-video-call>
-        }
+        <app-video-call *ngIf="isVideoCall" (closeVideoCallDrawer)="drawer.close(); isVideoCall=false">
+        </app-video-call>
       </mat-drawer>
+
     </mat-drawer-container>
   </main>
 </div>

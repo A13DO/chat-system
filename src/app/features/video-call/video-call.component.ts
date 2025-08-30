@@ -7,50 +7,80 @@ import {
   Input,
   Output,
   EventEmitter,
+  SimpleChanges,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Peer } from 'peerjs';
-// import { SignalRService } from '../../core/services/signal-r.service';
-// import { WebRTCService } from '../../core/services/web-rtc.service';
 import { Subscription } from 'rxjs';
 import { PeerService } from '../../core/services/peer.service';
+
 @Component({
   selector: 'app-video-call',
   templateUrl: './video-call.component.html',
   styleUrls: ['./video-call.component.css'],
 })
-export class VideoCallComponent {
+export class VideoCallComponent implements OnInit, OnDestroy {
   private senderId = localStorage.getItem('userId') as string;
   private peer!: Peer;
   private localStream!: MediaStream;
   private remoteStream!: MediaStream;
   private currentCall: any;
-  peerID: any;
-  destPeerID: any;
-  @ViewChild('chat', { static: false }) chat!: ElementRef;
-  @ViewChild('message', { static: false }) message!: ElementRef;
 
-  @ViewChild('localVideo', { static: false }) localVideo!: ElementRef<any>;
-  @ViewChild('remoteVideo', { static: false }) remoteVideo!: ElementRef<any>;
+  peerID: string | null = null;
+  destPeerID: string | null = null;
+
+  @ViewChild('localVideo', { static: false })
+  localVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('remoteVideo', { static: false })
+  remoteVideo!: ElementRef<HTMLVideoElement>;
+
   @Output() closeVideoCallDrawer: EventEmitter<any> = new EventEmitter();
+
+  @Input() isOpen!: boolean;
+  private DistPeerIdSubscription!: Subscription;
+
   constructor(
-    // private signalRService: SignalRService,
     private route: ActivatedRoute,
     private peerService: PeerService
   ) {}
-  private DistPeerIdSubscription!: Subscription;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isOpen'] && this.isOpen) {
+      this.startLocalStream(); // restart local camera when drawer opens
+      if (!this.peer) {
+        this.initPeer(); // reinit peer if destroyed
+      }
+    }
+  }
 
   ngOnInit() {
-    // 1. Setup peer
-    this.peer = new Peer().on('open', (id) => {
-      this.peerID = id;
-      this.peerService.updatePeerId(this.peerID);
-    });
+    if (!this.peer) {
+      this.initPeer();
+    }
 
-    // 2. Get local media
+    this.startLocalStream();
+
+    // Subscribe for remote peerId AFTER peer & localStream are ready
+    this.DistPeerIdSubscription = this.peerService.distPeerId$.subscribe(
+      (peerId) => {
+        if (peerId && peerId !== this.peerID && this.localStream) {
+          console.log('Dist peerId:', peerId);
+          this.startCall(peerId);
+          this.destPeerID = peerId;
+        }
+      }
+    );
+  }
+
+  private startLocalStream() {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
+        // Stop old stream if exists
+        if (this.localStream) {
+          this.localStream.getTracks().forEach((track) => track.stop());
+        }
+
         this.localStream = stream;
         const videoElement = this.localVideo.nativeElement;
         videoElement.srcObject = stream;
@@ -62,41 +92,41 @@ export class VideoCallComponent {
           );
       })
       .catch((err) => console.error('Error accessing media devices:', err));
-
-    // 3. Subscribe for remote peerId AFTER peer & localStream are ready
-    this.DistPeerIdSubscription = this.peerService.distPeerId$.subscribe(
-      (peerId) => {
-        if (peerId && peerId !== this.peerID && this.localStream) {
-          // console.log('Dist peerId:', peerId);
-          this.startCall(peerId);
-          this.destPeerID = peerId;
-        }
-      }
-    );
-
-    // 4. Handle incoming calls
-    this.peer.on('call', (call) => {
-      call.answer(this.localStream);
-      call.on('stream', (remoteStream) => {
-        this.remoteStream = remoteStream;
-        const videoElement = this.remoteVideo.nativeElement;
-        videoElement.srcObject = remoteStream;
-      });
-      this.currentCall = call;
-    });
   }
 
   startCall(distPeerID: string): void {
-    // console.log('start-call destID', distPeerID);
+    console.log('Calling peer:', distPeerID);
 
-    // Call a peer with the ID `peerId`
-    const call = this.peer.call(distPeerID, this.localStream);
-    // console.log(call);
+    if (!this.peer) {
+      this.initPeer();
+    }
+
+    if (!this.localStream) {
+      this.startLocalStream();
+    }
+
+    this._callPeer(distPeerID, this.localStream);
+  }
+
+  private _callPeer(distPeerID: string, stream: MediaStream): void {
+    if (this.currentCall) {
+      this.currentCall.close();
+    }
+
+    const call = this.peer.call(distPeerID, stream);
+
     call.on('stream', (remoteStream) => {
       this.remoteStream = remoteStream;
-      const videoElement = this.remoteVideo.nativeElement;
-      videoElement.srcObject = remoteStream;
-      // this.remoteVideoElement.srcObject = remoteStream; // Display remote stream
+      this.remoteVideo.nativeElement.srcObject = remoteStream;
+    });
+
+    call.on('error', (err) => console.error('Call error:', err));
+
+    call.on('close', () => {
+      console.log('Remote call closed');
+      this.closeVideoCallDrawer.emit();
+
+      this.cleanupRemote();
     });
 
     this.currentCall = call;
@@ -106,23 +136,60 @@ export class VideoCallComponent {
     if (this.currentCall) {
       this.currentCall.close();
       this.currentCall = null;
-      this.closeVideoCallDrawer.emit();
     }
+    this.closeVideoCallDrawer.emit();
 
+    this.cleanupRemote();
+
+    if (this.peer) {
+      this.peer.destroy();
+      this.peer = null as any;
+    }
+  }
+
+  private cleanupRemote(): void {
     if (this.remoteStream) {
       this.remoteStream.getTracks().forEach((track) => track.stop());
-      this.remoteVideo.nativeElement.srcObject = null; // ✅ clear
+      this.remoteStream = null as any;
     }
+    if (this.remoteVideo) {
+      this.remoteVideo.nativeElement.srcObject = null;
+    }
+  }
 
-    if (this.localStream) {
-      this.localStream.getTracks().forEach((track) => track.stop());
-      this.localVideo.nativeElement.srcObject = null; // ✅ clear
-    }
+  private initPeer(): void {
+    this.peer = new Peer().on('open', (id) => {
+      this.peerID = id;
+      this.peerService.updatePeerId(this.peerID);
+      console.log('Peer initialized with ID:', id);
+    });
+
+    // Handle incoming calls
+    this.peer.on('call', (call) => {
+      call.answer(this.localStream);
+      call.on('stream', (remoteStream) => {
+        this.remoteStream = remoteStream;
+        this.remoteVideo.nativeElement.srcObject = remoteStream;
+      });
+      this.currentCall = call;
+      call.on('close', () => {
+        console.log('Call closed by remote');
+        this.closeVideoCallDrawer.emit();
+
+        this.cleanupRemote();
+      });
+    });
   }
 
   ngOnDestroy() {
     if (this.DistPeerIdSubscription) {
       this.DistPeerIdSubscription.unsubscribe();
+    }
+    this.endCall();
+
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => track.stop());
+      // this.localStream = null as any;
     }
   }
 }

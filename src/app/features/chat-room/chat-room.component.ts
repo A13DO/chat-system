@@ -2,8 +2,10 @@
 import {
   Component,
   ElementRef,
+  Input,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -65,7 +67,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   private currentCall: any;
   @ViewChild('chat', { static: false }) chat!: ElementRef;
   @ViewChild('message', { static: false }) message!: ElementRef;
-  isVideoCall: boolean = false;
+  isVideoCall: boolean = true;
   private peerIdSubscription!: Subscription;
   private routeParamSubscription!: Subscription;
   private routeParamMapSubscription!: Subscription;
@@ -94,17 +96,29 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     // get Peer ID for video call
     this.peerIdSubscription = this.peerService.peerId$.subscribe((peerId) => {
       this.myPeerId = peerId;
-      // console.log('Received peerId:', peerId);
+      console.log('Received peerId:', peerId);
       this.onJoinRoom(this.RoomId, this.myPeerId);
     });
     // Join Room
     this.socketMessageSubscription = this.socketIOService
       .getMessages(this.RoomId)
       .subscribe((responseData: any) => {
-        this.messagesHistory = responseData;
-        Object.entries(responseData).forEach(([key, message]) => {
-          this.displayMessage(message as Message);
-        });
+        if (!responseData) {
+          return; // nothing to display
+        }
+
+        // If it's an array of messages
+        if (Array.isArray(responseData)) {
+          responseData.forEach((message: Message) => {
+            this.displayMessage(message);
+          });
+        }
+        // If it's an object with messages
+        else if (typeof responseData === 'object') {
+          Object.entries(responseData).forEach(([key, message]) => {
+            this.displayMessage(message as Message);
+          });
+        }
       });
     this.socketIOService.on('chat-room', (data: any) => {
       this.displayMessage(data);
@@ -117,7 +131,10 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
       //   this.loggedNewPeer = true; // 👈 mark as logged
       // }
 
+      console.log('New peer connected data:', data);
       if (data && data.peerId) {
+        console.log('New peer connected data:', data);
+
         this.peerService.updateDistPeerId(data.peerId); // Update peerId in service
       } else {
         console.error('PeerId not found in data:', data);
@@ -178,13 +195,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
 
     this.chat.nativeElement.appendChild(newMessage);
   }
-  videoCallToggle() {
-    if (this.isVideoCall == true) {
-      this.isVideoCall = false;
-    } else {
-      this.isVideoCall = true;
-    }
-  }
+
   onGetUserbyId(userId: any) {
     this.authService.getUserId(userId).subscribe({
       next: (res) => {
@@ -192,6 +203,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
         this.chatPartnerData = res;
       },
     });
+  }
+  videoCallToggle() {
+    this.isVideoCall = !this.isVideoCall;
+  }
+
+  onCloseVideoCall() {
+    this.isVideoCall = false; // 🔄 remove component
   }
   ngOnDestroy() {
     if (this.peerIdSubscription) {
