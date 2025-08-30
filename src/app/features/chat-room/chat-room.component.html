@@ -29,7 +29,8 @@
         <section #chat class="chat"></section>
 
         <div class="message-input-container">
-          <input #message type="text" id="message-bar" placeholder="Type your message...">
+          <input #message type="text" id="message-bar" placeholder="Type your message..."
+            (keydown.enter)="onSendMessage()">
           <button class="btn" type="button" (click)="onSendMessage()" [disabled]="ReceiverId == DEFAULT">
             Send
           </button>
