@@ -124,7 +124,7 @@ export class VideoCallComponent implements OnInit, OnDestroy {
 
     call.on('close', () => {
       console.log('Remote call closed');
-      this.closeVideoCallDrawer.emit();
+      // this.closeVideoCallDrawer.emit();
 
       this.cleanupRemote();
     });
@@ -174,7 +174,7 @@ export class VideoCallComponent implements OnInit, OnDestroy {
       this.currentCall = call;
       call.on('close', () => {
         console.log('Call closed by remote');
-        this.closeVideoCallDrawer.emit();
+        // this.closeVideoCallDrawer.emit();
 
         this.cleanupRemote();
       });
